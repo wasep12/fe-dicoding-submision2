@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Note App</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <note-header></note-header>
+    <div id="navbar">
+      <button id="notes-tab"><i class="fas fa-list"></i> Notes</button>
+      <button id="archived-tab"><i class="fas fa-archive"></i> Archived</button>
+    </div>
+    <main>
+      <note-input></note-input>
+      <div id="notesContainer"></div>
+    </main>
+
+    <!-- Edit Note Popup -->
+    <popup-element id="edit-popup"></popup-element>
+
+    <!-- Confirm Delete Popup -->
+    <div id="confirm-delete-popup" class="popup-overlay">
+      <div class="confirm-delete-content">
+        <p id="delete-confirm-message"></p>
+        <button id="confirm-delete">Delete</button>
+        <button id="cancel-delete">Cancel</button>
+      </div>
+    </div>
+
+    <script src="bundle.js"></script>
+  </body>
+</html>
