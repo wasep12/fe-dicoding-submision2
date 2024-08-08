@@ -1,46 +1,46 @@
-const API_URL = "https://notes-api.dicoding.dev/v2";
+const API_URL = 'https://notes-api.dicoding.dev/v2';
 
 class NoteArchiveItem extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
     this.render();
 
     this.shadowRoot
-      .querySelector(".unarchive-btn")
-      .addEventListener("click", async () => {
+      .querySelector('.unarchive-btn')
+      .addEventListener('click', async () => {
         await this.unarchiveNote();
       });
 
     this.shadowRoot
-      .querySelector(".delete-btn")
-      .addEventListener("click", () => {
-        const event = new CustomEvent("delete-note", { detail: this.note });
+      .querySelector('.delete-btn')
+      .addEventListener('click', () => {
+        const event = new CustomEvent('delete-note', { detail: this.note });
         document.dispatchEvent(event);
       });
 
     this.shadowRoot
-      .querySelector(".view-more-btn")
-      .addEventListener("click", () => {
+      .querySelector('.view-more-btn')
+      .addEventListener('click', () => {
         this.showPopup();
       });
   }
 
   disconnectedCallback() {
     this.shadowRoot
-      .querySelector(".unarchive-btn")
-      .removeEventListener("click", this.unarchiveNote);
+      .querySelector('.unarchive-btn')
+      .removeEventListener('click', this.unarchiveNote);
 
     this.shadowRoot
-      .querySelector(".delete-btn")
-      .removeEventListener("click", this.handleDelete);
+      .querySelector('.delete-btn')
+      .removeEventListener('click', this.handleDelete);
 
     this.shadowRoot
-      .querySelector(".view-more-btn")
-      .removeEventListener("click", this.showPopup);
+      .querySelector('.view-more-btn')
+      .removeEventListener('click', this.showPopup);
   }
 
   set note(note) {
@@ -55,9 +55,9 @@ class NoteArchiveItem extends HTMLElement {
   render() {
     const note = this.note || {};
     const {
-      title = "No Title",
-      body = "No Description",
-      createdAt = "Unknown Date",
+      title = 'No Title',
+      body = 'No Description',
+      createdAt = 'Unknown Date',
     } = note;
 
     this.shadowRoot.innerHTML = `
@@ -202,19 +202,19 @@ class NoteArchiveItem extends HTMLElement {
   async unarchiveNote() {
     try {
       await fetch(`${API_URL}/notes/${this.note.id}/unarchive`, {
-        method: "POST",
+        method: 'POST',
       });
 
       // Optionally remove from DOM or notify parent to refresh
       this.remove(); // This will remove the note item from the DOM
 
       // Or notify parent to refresh
-      const event = new CustomEvent("note-unarchived", {
+      const event = new CustomEvent('note-unarchived', {
         detail: this.note.id,
       });
       document.dispatchEvent(event);
     } catch (error) {
-      console.error("Error unarchiving note:", error);
+      console.error('Error unarchiving note:', error);
       // Optionally display a message to the user
     }
   }
@@ -222,43 +222,43 @@ class NoteArchiveItem extends HTMLElement {
   async showPopup() {
     if (!this.note.id) return;
 
-    const popupOverlay = this.shadowRoot.querySelector(".popup-overlay");
-    const popupTitle = this.shadowRoot.querySelector(".popup-title");
-    const popupBody = this.shadowRoot.querySelector(".popup-body");
-    const popupDate = this.shadowRoot.querySelector(".popup-date");
+    const popupOverlay = this.shadowRoot.querySelector('.popup-overlay');
+    const popupTitle = this.shadowRoot.querySelector('.popup-title');
+    const popupBody = this.shadowRoot.querySelector('.popup-body');
+    const popupDate = this.shadowRoot.querySelector('.popup-date');
 
-    popupOverlay.classList.add("show");
+    popupOverlay.classList.add('show');
 
     try {
       const response = await fetch(`${API_URL}/notes/${this.note.id}`);
       const result = await response.json();
 
-      if (result.status === "success" && result.data) {
+      if (result.status === 'success' && result.data) {
         popupTitle.textContent = result.data.title;
         popupBody.textContent = result.data.body;
         popupDate.textContent = new Date(
           result.data.createdAt
         ).toLocaleString();
       } else {
-        popupTitle.textContent = "Error";
-        popupBody.textContent = "Data tidak dapat dimuat.";
-        popupDate.textContent = "";
+        popupTitle.textContent = 'Error';
+        popupBody.textContent = 'Data tidak dapat dimuat.';
+        popupDate.textContent = '';
       }
     } catch (error) {
-      popupTitle.textContent = "Error";
-      popupBody.textContent = "Terjadi kesalahan saat memuat data.";
-      popupDate.textContent = "";
+      popupTitle.textContent = 'Error';
+      popupBody.textContent = 'Terjadi kesalahan saat memuat data.';
+      popupDate.textContent = '';
     }
 
     this.shadowRoot
-      .querySelector(".close-btn")
-      .addEventListener("click", () => {
-        popupOverlay.classList.remove("show");
+      .querySelector('.close-btn')
+      .addEventListener('click', () => {
+        popupOverlay.classList.remove('show');
       });
   }
 }
 
 // Check if the element is already defined
-if (!customElements.get("note-archive-item")) {
-  customElements.define("note-archive-item", NoteArchiveItem);
+if (!customElements.get('note-archive-item')) {
+  customElements.define('note-archive-item', NoteArchiveItem);
 }

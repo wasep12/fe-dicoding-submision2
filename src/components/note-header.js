@@ -1,7 +1,7 @@
 class NoteHeader extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
@@ -62,15 +62,15 @@ class NoteHeader extends HTMLElement {
     `;
 
     this.shadowRoot
-      .querySelector(".search-icon")
-      .addEventListener("click", () => {
-        const query = this.shadowRoot.querySelector(".search-input").value;
-        const event = new CustomEvent("search-notes", { detail: query });
+      .querySelector('.search-icon')
+      .addEventListener('click', () => {
+        const query = this.shadowRoot.querySelector('.search-input').value;
+        const event = new CustomEvent('search-notes', { detail: query });
         document.dispatchEvent(event);
       });
   }
 }
 
-if (!customElements.get("note-header")) {
-  customElements.define("note-header", NoteHeader);
+if (!customElements.get('note-header')) {
+  customElements.define('note-header', NoteHeader);
 }

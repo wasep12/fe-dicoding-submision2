@@ -1,21 +1,21 @@
-import "./styles/styles.css";
-import "./components/note-header";
-import "./components/note-input";
-import "./components/note-item";
-import "./components/note-archive-item";
-import "./components/loading-bar";
+import './styles/styles.css';
+import './components/note-header';
+import './components/note-input';
+import './components/note-item';
+import './components/note-archive-item';
+import './components/loading-bar';
 
 // URL API yang digunakan
-const API_URL = "https://notes-api.dicoding.dev/v2";
+const API_URL = 'https://notes-api.dicoding.dev/v2';
 
 // Flag untuk mencegah multiple fetch
 let fetchingNotes = false;
-let currentFilter = "not-archived";
-let currentQuery = "";
+let currentFilter = 'not-archived';
+let currentQuery = '';
 
 // Tampilkan loading bar
 function showLoading() {
-  const loadingBar = document.createElement("loading-bar");
+  const loadingBar = document.createElement('loading-bar');
   document.body.appendChild(loadingBar);
   loadingBar.simulateLoading(3500); // Durasi loading 3 detik
   return loadingBar;
@@ -27,23 +27,23 @@ function hideLoading(loadingBar) {
 }
 
 // Ambil dan tampilkan catatan
-async function fetchNotes(filter = "not-archived", query = "") {
+async function fetchNotes(filter = 'not-archived', query = '') {
   if (fetchingNotes) {
-    console.log("Fetching notes sudah dalam proses...");
+    console.log('Fetching notes sudah dalam proses...');
     return; // Mencegah multiple fetch
   }
   fetchingNotes = true;
 
   const loadingBar = showLoading();
   try {
-    const endpoint = filter === "archived" ? "notes/archived" : "notes";
+    const endpoint = filter === 'archived' ? 'notes/archived' : 'notes';
     console.log(`Fetching notes from endpoint: ${endpoint}`);
     const response = await fetch(`${API_URL}/${endpoint}`);
     const result = await response.json();
 
-    console.log("Respon API fetchNotes:", result);
+    console.log('Respon API fetchNotes:', result);
 
-    if (result.status === "success" && Array.isArray(result.data)) {
+    if (result.status === 'success' && Array.isArray(result.data)) {
       const filteredNotes = result.data.filter(
         (note) =>
           note.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -51,10 +51,10 @@ async function fetchNotes(filter = "not-archived", query = "") {
       );
       displayNotes(filteredNotes, filter); // Perbarui tampilan dengan data yang difilter
     } else {
-      console.error("Respon API tidak terduga:", result);
+      console.error('Respon API tidak terduga:', result);
     }
   } catch (error) {
-    console.error("Error saat mengambil catatan:", error);
+    console.error('Error saat mengambil catatan:', error);
   } finally {
     hideLoading(loadingBar);
     fetchingNotes = false; // Reset flag setelah fetching selesai
@@ -62,20 +62,20 @@ async function fetchNotes(filter = "not-archived", query = "") {
 }
 
 // Tampilkan catatan di kontainer
-function displayNotes(notes = [], filter = "not-archived") {
-  console.log("Menampilkan catatan:", notes);
+function displayNotes(notes = [], filter = 'not-archived') {
+  console.log('Menampilkan catatan:', notes);
 
   if (!Array.isArray(notes)) {
-    console.error("Data catatan tidak valid:", notes);
+    console.error('Data catatan tidak valid:', notes);
     return;
   }
 
-  const notesContainer = document.getElementById("notesContainer");
-  notesContainer.innerHTML = "";
+  const notesContainer = document.getElementById('notesContainer');
+  notesContainer.innerHTML = '';
 
   notes.forEach((note) => {
     const noteElement = document.createElement(
-      filter === "archived" ? "note-archive-item" : "note-item"
+      filter === 'archived' ? 'note-archive-item' : 'note-item'
     );
     noteElement.note = {
       ...note,
@@ -86,13 +86,13 @@ function displayNotes(notes = [], filter = "not-archived") {
 }
 
 // Tangani penambahan catatan
-document.addEventListener("note-added", async (event) => {
+document.addEventListener('note-added', async (event) => {
   const note = event.detail;
 
-  console.log("Catatan yang akan ditambahkan:", note);
+  console.log('Catatan yang akan ditambahkan:', note);
 
   if (!note.title || !note.body) {
-    console.error("Judul dan deskripsi catatan diperlukan.");
+    console.error('Judul dan deskripsi catatan diperlukan.');
     return;
   }
 
@@ -100,108 +100,107 @@ document.addEventListener("note-added", async (event) => {
   try {
     // Hanya kirim title dan body
     const { title, body } = note;
-    console.log("Data yang dikirim ke API:", { title, body });
+    console.log('Data yang dikirim ke API:', { title, body });
 
     const response = await fetch(`${API_URL}/notes`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ title, body }),
     });
 
     const result = await response.json();
 
-    if (result.status === "success") {
-      console.log("Catatan berhasil ditambahkan:", result);
+    if (result.status === 'success') {
+      console.log('Catatan berhasil ditambahkan:', result);
       await fetchNotes(currentFilter, currentQuery); // Perbarui data dengan mengambil catatan terbaru
     } else {
-      console.error("Gagal menambahkan catatan:", result);
+      console.error('Gagal menambahkan catatan:', result);
     }
   } catch (error) {
-    console.error("Error saat menambahkan catatan:", error);
+    console.error('Error saat menambahkan catatan:', error);
   } finally {
     hideLoading(loadingBar);
   }
 });
 
 // Tangani penghapusan catatan
-document.addEventListener("delete-note", async (event) => {
+document.addEventListener('delete-note', async (event) => {
   const noteToDelete = event.detail;
-  const confirmDeletePopup = document.getElementById("confirm-delete-popup");
-  confirmDeletePopup.querySelector(
-    "#delete-confirm-message"
-  ).innerText = `Apakah Anda yakin ingin menghapus catatan berjudul "${noteToDelete.title}"?`;
+  const confirmDeletePopup = document.getElementById('confirm-delete-popup');
+  confirmDeletePopup.querySelector('#delete-confirm-message').innerText =
+    `Apakah Anda yakin ingin menghapus catatan berjudul "${noteToDelete.title}"?`;
 
-  document.getElementById("confirm-delete").onclick = async () => {
+  document.getElementById('confirm-delete').onclick = async () => {
     const loadingBar = showLoading();
     try {
       const response = await fetch(`${API_URL}/notes/${noteToDelete.id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       const result = await response.json();
 
-      if (result.status === "success") {
-        console.log("Catatan berhasil dihapus:", result);
+      if (result.status === 'success') {
+        console.log('Catatan berhasil dihapus:', result);
         await fetchNotes(currentFilter, currentQuery); // Perbarui data dengan mengambil catatan terbaru
-        confirmDeletePopup.style.display = "none";
+        confirmDeletePopup.style.display = 'none';
       } else {
-        console.error("Gagal menghapus catatan:", result);
+        console.error('Gagal menghapus catatan:', result);
       }
     } catch (error) {
-      console.error("Error saat menghapus catatan:", error);
+      console.error('Error saat menghapus catatan:', error);
     } finally {
       hideLoading(loadingBar);
     }
   };
 
-  document.getElementById("cancel-delete").onclick = () => {
-    confirmDeletePopup.style.display = "none";
+  document.getElementById('cancel-delete').onclick = () => {
+    confirmDeletePopup.style.display = 'none';
   };
 
-  confirmDeletePopup.style.display = "flex";
+  confirmDeletePopup.style.display = 'flex';
 });
 
 // Tangani pengarsipan catatan
-document.addEventListener("archive-note", async (event) => {
+document.addEventListener('archive-note', async (event) => {
   const noteToArchive = event.detail;
   const loadingBar = showLoading();
   try {
-    const endpoint = noteToArchive.archived ? "unarchive" : "archive";
+    const endpoint = noteToArchive.archived ? 'unarchive' : 'archive';
     const response = await fetch(
       `${API_URL}/notes/${noteToArchive.id}/${endpoint}`,
       {
-        method: "POST",
+        method: 'POST',
       }
     );
     const result = await response.json();
 
-    if (result.status === "success") {
-      console.log("Status catatan berhasil diupdate:", result);
+    if (result.status === 'success') {
+      console.log('Status catatan berhasil diupdate:', result);
       await fetchNotes(currentFilter, currentQuery); // Perbarui data dengan mengambil catatan terbaru
     } else {
-      console.error("Gagal mengupdate status catatan:", result);
+      console.error('Gagal mengupdate status catatan:', result);
     }
   } catch (error) {
-    console.error("Error saat mengupdate status catatan:", error);
+    console.error('Error saat mengupdate status catatan:', error);
   } finally {
     hideLoading(loadingBar);
   }
 });
 
 // Event listener untuk navigasi antara notes dan archived
-document.getElementById("notes-tab").addEventListener("click", () => {
-  currentFilter = "not-archived";
+document.getElementById('notes-tab').addEventListener('click', () => {
+  currentFilter = 'not-archived';
   fetchNotes(currentFilter, currentQuery);
 });
 
-document.getElementById("archived-tab").addEventListener("click", () => {
-  currentFilter = "archived";
+document.getElementById('archived-tab').addEventListener('click', () => {
+  currentFilter = 'archived';
   fetchNotes(currentFilter, currentQuery);
 });
 
 // Event listener untuk pencarian catatan
-document.addEventListener("search-notes", async (event) => {
+document.addEventListener('search-notes', async (event) => {
   currentQuery = event.detail;
   await fetchNotes(currentFilter, currentQuery);
 });
@@ -213,7 +212,7 @@ fetchNotes(currentFilter, currentQuery);
 class NoteItem extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.handleArchiveClick = this.handleArchiveClick.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleViewMoreClick = this.handleViewMoreClick.bind(this);
@@ -222,26 +221,26 @@ class NoteItem extends HTMLElement {
   connectedCallback() {
     this.render();
     this.shadowRoot
-      .querySelector(".archive-btn")
-      .addEventListener("click", this.handleArchiveClick);
+      .querySelector('.archive-btn')
+      .addEventListener('click', this.handleArchiveClick);
     this.shadowRoot
-      .querySelector(".delete-btn")
-      .addEventListener("click", this.handleDeleteClick);
+      .querySelector('.delete-btn')
+      .addEventListener('click', this.handleDeleteClick);
     this.shadowRoot
-      .querySelector(".view-more-btn")
-      .addEventListener("click", this.handleViewMoreClick);
+      .querySelector('.view-more-btn')
+      .addEventListener('click', this.handleViewMoreClick);
   }
 
   disconnectedCallback() {
     this.shadowRoot
-      .querySelector(".archive-btn")
-      .removeEventListener("click", this.handleArchiveClick);
+      .querySelector('.archive-btn')
+      .removeEventListener('click', this.handleArchiveClick);
     this.shadowRoot
-      .querySelector(".delete-btn")
-      .removeEventListener("click", this.handleDeleteClick);
+      .querySelector('.delete-btn')
+      .removeEventListener('click', this.handleDeleteClick);
     this.shadowRoot
-      .querySelector(".view-more-btn")
-      .removeEventListener("click", this.handleViewMoreClick);
+      .querySelector('.view-more-btn')
+      .removeEventListener('click', this.handleViewMoreClick);
   }
 
   set note(note) {
@@ -256,9 +255,9 @@ class NoteItem extends HTMLElement {
   render() {
     const note = this.note || {};
     const {
-      title = "No Title",
-      body = "No Description",
-      createdAt = "Unknown Date",
+      title = 'No Title',
+      body = 'No Description',
+      createdAt = 'Unknown Date',
     } = note;
 
     this.shadowRoot.innerHTML = `
@@ -416,43 +415,43 @@ class NoteItem extends HTMLElement {
   async showPopup() {
     if (!this.note.id) return;
 
-    const popupOverlay = this.shadowRoot.querySelector(".popup-overlay");
-    const popupTitle = this.shadowRoot.querySelector(".popup-title");
-    const popupBody = this.shadowRoot.querySelector(".popup-body");
-    const popupDate = this.shadowRoot.querySelector(".popup-date");
+    const popupOverlay = this.shadowRoot.querySelector('.popup-overlay');
+    const popupTitle = this.shadowRoot.querySelector('.popup-title');
+    const popupBody = this.shadowRoot.querySelector('.popup-body');
+    const popupDate = this.shadowRoot.querySelector('.popup-date');
 
-    popupOverlay.classList.add("show");
+    popupOverlay.classList.add('show');
 
     try {
       const response = await fetch(`${API_URL}/notes/${this.note.id}`);
       const result = await response.json();
 
-      if (result.status === "success" && result.data) {
+      if (result.status === 'success' && result.data) {
         popupTitle.textContent = result.data.title;
         popupBody.textContent = result.data.body;
         popupDate.textContent = new Date(
           result.data.createdAt
         ).toLocaleString();
       } else {
-        popupTitle.textContent = "Error";
-        popupBody.textContent = "Data tidak dapat dimuat.";
-        popupDate.textContent = "";
+        popupTitle.textContent = 'Error';
+        popupBody.textContent = 'Data tidak dapat dimuat.';
+        popupDate.textContent = '';
       }
     } catch (error) {
-      popupTitle.textContent = "Error";
-      popupBody.textContent = "Terjadi kesalahan saat memuat data.";
-      popupDate.textContent = "";
+      popupTitle.textContent = 'Error';
+      popupBody.textContent = 'Terjadi kesalahan saat memuat data.';
+      popupDate.textContent = '';
     }
 
     this.shadowRoot
-      .querySelector(".close-btn")
-      .addEventListener("click", () => {
-        popupOverlay.classList.remove("show");
+      .querySelector('.close-btn')
+      .addEventListener('click', () => {
+        popupOverlay.classList.remove('show');
       });
   }
 }
 
 // Daftarkan custom element jika belum terdaftar
-if (!customElements.get("note-item")) {
-  customElements.define("note-item", NoteItem);
+if (!customElements.get('note-item')) {
+  customElements.define('note-item', NoteItem);
 }

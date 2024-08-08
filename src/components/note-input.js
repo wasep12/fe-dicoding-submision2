@@ -1,38 +1,38 @@
 class NoteInput extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
     this.render();
 
     // Mengatur event listener hanya jika form sudah dirender
-    const form = this.shadowRoot.querySelector("form");
-    form.addEventListener("submit", (e) => {
+    const form = this.shadowRoot.querySelector('form');
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const title = this.shadowRoot.querySelector("#title").value;
-      const body = this.shadowRoot.querySelector("#body").value;
-      const createdAt = this.shadowRoot.querySelector("#created-at").value;
+      const title = this.shadowRoot.querySelector('#title').value;
+      const body = this.shadowRoot.querySelector('#body').value;
+      const createdAt = this.shadowRoot.querySelector('#created-at').value;
 
       let isValid = true;
 
       // Clear previous error messages
-      this.shadowRoot.querySelector("#title-error").textContent = "";
-      this.shadowRoot.querySelector("#body-error").textContent = "";
+      this.shadowRoot.querySelector('#title-error').textContent = '';
+      this.shadowRoot.querySelector('#body-error').textContent = '';
 
       // Validate title
       if (title.length < 5) {
-        this.shadowRoot.querySelector("#title-error").textContent =
-          "⚠️ Title must be at least 5 characters long.";
+        this.shadowRoot.querySelector('#title-error').textContent =
+          '⚠️ Title must be at least 5 characters long.';
         isValid = false;
       }
 
       // Validate body
       if (body.length < 10) {
-        this.shadowRoot.querySelector("#body-error").textContent =
-          "⚠️ Description must be at least 10 characters long.";
+        this.shadowRoot.querySelector('#body-error').textContent =
+          '⚠️ Description must be at least 10 characters long.';
         isValid = false;
       }
 
@@ -44,7 +44,7 @@ class NoteInput extends HTMLElement {
           createdAt: createdAt || new Date().toISOString(), // Use input time or current time
           archived: false,
         };
-        const event = new CustomEvent("note-added", { detail: note });
+        const event = new CustomEvent('note-added', { detail: note });
         document.dispatchEvent(event);
         form.reset(); // Reset form fields after successful submission
       }
@@ -111,6 +111,4 @@ class NoteInput extends HTMLElement {
 }
 
 // Pastikan elemen custom hanya didefinisikan sekali
-if (!customElements.get("note-input")) {
-  customElements.define("note-input", NoteInput);
-}
+customElements.define('note-input', NoteInput);

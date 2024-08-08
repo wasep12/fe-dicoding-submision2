@@ -1,28 +1,28 @@
-const API_URL = "https://notes-api.dicoding.dev/v2";
+const API_URL = 'https://notes-api.dicoding.dev/v2';
 
 class NoteItem extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
     this.render();
     this.shadowRoot
-      .querySelector(".archive-btn")
-      .addEventListener("click", () => {
-        const event = new CustomEvent("archive-note", { detail: this.note });
+      .querySelector('.archive-btn')
+      .addEventListener('click', () => {
+        const event = new CustomEvent('archive-note', { detail: this.note });
         document.dispatchEvent(event);
       });
     this.shadowRoot
-      .querySelector(".delete-btn")
-      .addEventListener("click", () => {
-        const event = new CustomEvent("delete-note", { detail: this.note });
+      .querySelector('.delete-btn')
+      .addEventListener('click', () => {
+        const event = new CustomEvent('delete-note', { detail: this.note });
         document.dispatchEvent(event);
       });
     this.shadowRoot
-      .querySelector(".view-more-btn")
-      .addEventListener("click", () => {
+      .querySelector('.view-more-btn')
+      .addEventListener('click', () => {
         this.showPopup();
       });
   }
@@ -39,9 +39,9 @@ class NoteItem extends HTMLElement {
   render() {
     const note = this.note || {};
     const {
-      title = "No Title",
-      body = "No Description",
-      createdAt = "Unknown Date",
+      title = 'No Title',
+      body = 'No Description',
+      createdAt = 'Unknown Date',
     } = note;
 
     this.shadowRoot.innerHTML = `
@@ -68,16 +68,15 @@ class NoteItem extends HTMLElement {
         .note-item h2 {
           font-size: 18px;
           margin: 0;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          white-space: normal; /* Allow wrapping */
+          word-wrap: break-word; /* Ensure long words break */
         }
         .note-body {
           display: -webkit-box;
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 5; /* Limit the number of visible lines */
           overflow: hidden;
-          text-overflow: ellipsis;
+          text-overflow: ellipsis; /* Add ellipsis if overflow */
           max-height: 8em; /* Limit height of the body */
           margin-bottom: 10px; /* Space between text and actions */
         }
@@ -199,43 +198,43 @@ class NoteItem extends HTMLElement {
   async showPopup() {
     if (!this.note.id) return;
 
-    const popupOverlay = this.shadowRoot.querySelector(".popup-overlay");
-    const popupTitle = this.shadowRoot.querySelector(".popup-title");
-    const popupBody = this.shadowRoot.querySelector(".popup-body");
-    const popupDate = this.shadowRoot.querySelector(".popup-date");
+    const popupOverlay = this.shadowRoot.querySelector('.popup-overlay');
+    const popupTitle = this.shadowRoot.querySelector('.popup-title');
+    const popupBody = this.shadowRoot.querySelector('.popup-body');
+    const popupDate = this.shadowRoot.querySelector('.popup-date');
 
-    popupOverlay.classList.add("show");
+    popupOverlay.classList.add('show');
 
     try {
       const response = await fetch(`${API_URL}/notes/${this.note.id}`);
       const result = await response.json();
 
-      if (result.status === "success" && result.data) {
+      if (result.status === 'success' && result.data) {
         popupTitle.textContent = result.data.title;
         popupBody.textContent = result.data.body;
         popupDate.textContent = new Date(
           result.data.createdAt
         ).toLocaleString();
       } else {
-        popupTitle.textContent = "Error";
-        popupBody.textContent = "Data tidak dapat dimuat.";
-        popupDate.textContent = "";
+        popupTitle.textContent = 'Error';
+        popupBody.textContent = 'Data tidak dapat dimuat.';
+        popupDate.textContent = '';
       }
     } catch (error) {
-      popupTitle.textContent = "Error";
-      popupBody.textContent = "Terjadi kesalahan saat memuat data.";
-      popupDate.textContent = "";
+      popupTitle.textContent = 'Error';
+      popupBody.textContent = 'Terjadi kesalahan saat memuat data.';
+      popupDate.textContent = '';
     }
 
     this.shadowRoot
-      .querySelector(".close-btn")
-      .addEventListener("click", () => {
-        popupOverlay.classList.remove("show");
+      .querySelector('.close-btn')
+      .addEventListener('click', () => {
+        popupOverlay.classList.remove('show');
       });
   }
 }
 
 // Check if the element is already defined
-if (!customElements.get("note-item")) {
-  customElements.define("note-item", NoteItem);
+if (!customElements.get('note-item')) {
+  customElements.define('note-item', NoteItem);
 }

@@ -1,6 +1,6 @@
 /* Base Styles */
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #f5f5f5;
   margin: 0;
   padding: 0;
@@ -29,7 +29,9 @@ header {
   font-size: 16px;
   font-weight: bold;
   color: white;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -120,7 +122,10 @@ form button:hover {
   height: 200px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .note:hover {
@@ -422,5 +427,17 @@ form button:hover {
 
   #notesContainer {
     grid-template-columns: 1fr;
+  }
+}
+/* Media query for 1080px screens */
+@media (min-width: 1080px) {
+  .note-item {
+    width: 50%; /* Example: set the card width to 50% on screens 1080px or wider */
+  }
+}
+/* Media query for mobile responsiveness */
+@media (max-width: 768px) {
+  .note-item {
+    width: 100%;
   }
 }

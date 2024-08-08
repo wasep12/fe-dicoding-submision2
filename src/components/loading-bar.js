@@ -1,7 +1,7 @@
 class LoadingBar extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = `
             <style>
               .loading-overlay {
@@ -82,14 +82,14 @@ class LoadingBar extends HTMLElement {
   }
 
   updateProgress(percent) {
-    const loadingBar = this.shadowRoot.querySelector(".loading-bar");
-    const loadingPercent = this.shadowRoot.querySelector(".loading-percent");
+    const loadingBar = this.shadowRoot.querySelector('.loading-bar');
+    const loadingPercent = this.shadowRoot.querySelector('.loading-percent');
     loadingBar.style.width = `${percent}%`;
     loadingPercent.textContent = `${percent}%`;
 
     // Stop animation once loading is complete
     if (percent === 100) {
-      this.shadowRoot.querySelector(".spinner").style.animation = "none";
+      this.shadowRoot.querySelector('.spinner').style.animation = 'none';
     }
   }
 
@@ -108,6 +108,6 @@ class LoadingBar extends HTMLElement {
   }
 }
 
-if (!customElements.get("loading-bar")) {
-  customElements.define("loading-bar", LoadingBar);
+if (!customElements.get('loading-bar')) {
+  customElements.define('loading-bar', LoadingBar);
 }
